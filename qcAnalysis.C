@@ -33,11 +33,11 @@ void myOptions(Int_t l);
 Double_t fitfun(Double_t *x, Double_t *par);
 Double_t fitfunp(Double_t *x, Double_t *par);
 
-void qcAnalysis(int nRun=0)
+void qcAnalysis(int nRun=544515)
 {
   // ***************************************************************************
   // IMPORTANT: ONE SHOULD SET HERE WHETHER ZDC IS CALIBRATED IN ENERGY OR NOT
-  bool isZDCcalibrated = kFALSE;
+  bool isZDCcalibrated = kTRUE;
   // ***************************************************************************
   bool printScreen = kTRUE; // set kFALSE to avoid printing values on screen
   // -----------------------
@@ -55,7 +55,7 @@ void qcAnalysis(int nRun=0)
  TFile *fin = TFile::Open(fn.Data(), "READ");
  printf("\n *** Opening file %s ***\n", fn.Data());
  
- o2::quality_control::core::MonitorObjectCollection *mon = (o2::quality_control::core::MonitorObjectCollection *) fin->Get("ZDC/Rec");
+ o2::quality_control::core::MonitorObjectCollection *mon = (o2::quality_control::core::MonitorObjectCollection *) fin->Get("int/ZDC/Rec");
  //o2::quality_control::core::MonitorObjectCollection *mon = (o2::quality_control::core::MonitorObjectCollection *) fin->Get("in/ZDC/Rec");
  
  if(!mon){
@@ -93,122 +93,6 @@ void qcAnalysis(int nRun=0)
  
  printf(" Histograms retrieved\n");
 
- TCanvas *c1 = new TCanvas("c1","Fit 1n peak ZNA", 0, 0, 600,600);
-  c1->cd();
-  gPad->SetLogz(1);
-
-  hdebu->Draw("colz");
-  hdebu->GetXaxis()->SetTitle("t_{ZNC}-t_{ZNA} (ns)");
-  hdebu->GetXaxis()->SetRangeUser(-15., 15.);
-  hdebu->GetYaxis()->SetTitle("t_{ZNC}+t_{ZNA} (ns)");
-
-  TLatex *t = new TLatex();
-    t->SetNDC();
-    t->SetTextAlign(22);
-    t->SetTextFont(42);
-    t->SetTextSize(0.05);
-
-   t->DrawLatex(0.1,0.9,"ALICE Performance");
-   t->DrawLatex(0.1,0.75,"Pb-Pb #sqrt{#it{s_{NN}}} = 5.36 TeV");
-
-  hZNA1n->SetLineColor(kBlue+3);
-  hZNA1n->Draw("");
-  hZNA1n->GetXaxis()->SetTitle("ZNA signal (a.u.)");
-  hZNA1n->GetYaxis()->SetTitle("Counts");
-  // ******************************************
-  float npara = hZNA1n->GetMaximum();
-  float xmaxa = hZNA1n->GetBinCenter(hZNA1n->GetMaximumBin());
-  double xlowa = 0.2*xmaxa, xupa = 3.5*xmaxa;  
-  printf(" - fitting ZNA spectrum in x range: %1.0f-%1.0f\n",xlowa, xupa);
-  hZNA1n->GetXaxis()->SetRangeUser(1.,300.);
-  	TF1 *funcA = new TF1("fitfun", fitfun, xlowa, xupa, 5);
-		funcA->SetParameters(0.95*npara, xmaxa, 0.18*xmaxa, npara*0.16, npara*0.04);
-  	funcA->SetParNames("N1A","mu1A","s1A","N2A","N3A");
-	  //
-    funcA->SetLineColor(kPink-2);
-    funcA->SetLineWidth(1);
-	  hZNA1n->Fit("fitfun","RQ");
-    //
-    Double_t mu1A = funcA->GetParameter(1);
-  
-  TString s1 = "ZNApeak1n_";
-  s1.Append(Form("%d.gif", nRun));
-  c1->Print(s1.Data());
-
- TCanvas *c2 = new TCanvas("c2","Fit 1n peak ZNC", 600, 0, 600, 600);
-  c2->cd();
-  //gPad->SetLogy(1);
-  hZNC1n->SetLineColor(kAzure+7);
-  hZNC1n->Draw("");
-  hZNC1n->GetXaxis()->SetTitle("ZNA signal (a.u.)");
-  hZNC1n->GetYaxis()->SetTitle("Counts");
-  // ******************************************
-  float npar2 = hZNC1n->GetMaximum();
-  float xmaxc = hZNC1n->GetBinCenter(hZNC1n->GetMaximumBin());
-  double xlowc = 0.2*xmaxc, xupc = 3.5*xmaxc;  
-  printf(" - fitting ZNC spectrum in x range: %1.0f-%1.0f  \n", xlowc, xupc);
-  hZNC1n->GetXaxis()->SetRangeUser(1.,300.);
-  	TF1 *funcC = new TF1("fitfun", fitfun, xlowc, xupc, 5);
-    funcC->SetParameters(0.95*npar2, xmaxc, 0.18*xmaxc, npar2*0.16, npar2*0.04);
-  	funcC->SetParNames("N1C","mu1C","s1C","N2C","N3C");
-	  //
-    funcC->SetLineColor(kPink);
-    funcC->SetLineWidth(1);
-	  hZNC1n->Fit("fitfun","RQ");
-    //
-    Double_t mu1C = funcC->GetParameter(1);
-  
-  TString s2 = "ZNCpeak1n_";
-  s2.Append(Form("%d.gif", nRun));
-  c2->Print(s2.Data());
-
-TCanvas *c3 = new TCanvas("c3","Fit 1p peak ZPA", 0, 600, 500, 500);
- c3->cd();
-  gPad->SetLogy(1);
-  hZPA1p->SetLineColor(kAzure-4);
-  hZPA1p->Draw("");
-  hZPA1p->GetXaxis()->SetRangeUser(0., 250);
-  hZPA1p->GetXaxis()->SetTitle("ZPA signal (a.u.)");
-  hZPA1p->GetYaxis()->SetTitle("Counts");
-  //
-  double xlowp = 0, xupp = 0.;
-  if(isZDCcalibrated) xlowp = 3., xupp = 10.;
-  else xlowp = 50., xupp = 100.;
-  printf(" - fitting ZP spectra in x range: %1.0f-%1.0f  \n", xlowp, xupp);
-  //
-  hZPA1p->Fit("gaus","Q","", xlowp, xupp);
-  TF1 *f1pa = (TF1*)hZPA1p->GetListOfFunctions()->FindObject("gaus");
-  double mu1pA = f1pa->GetParameter(1);
-  
-  TString s3 = "ZPApeak1p_";
-  s3.Append(Form("%d.gif", nRun));
-  c3->Print(s3.Data());
-
-
-TCanvas *c4 = new TCanvas("c4","Fit 1p peak ZPC", 600, 600, 500, 500);
- c4->cd();
-  gPad->SetLogy(1);
-  hZPC1p->SetLineColor(kViolet-4);
-  hZPC1p->Draw("");
-  hZPC1p->GetXaxis()->SetRangeUser(0., 250);
-  hZPC1p->GetXaxis()->SetTitle("ZPA signal (a.u.)");
-  hZPC1p->GetYaxis()->SetTitle("Counts");
-  //
-  hZPC1p->Fit("gaus","Q","", xlowp, xupp);
-  TF1 *f1pc = (TF1*)hZPC1p->GetListOfFunctions()->FindObject("gaus");
-  double mu1pC = f1pc->GetParameter(1);
-
- TH1D *hxZNC = hcentrZNC->ProjectionX("hxZNC");
- TH1D *hyZNC = hcentrZNC->ProjectionY("hyZNC");
- TH1D *hxZNA = hcentrZNA->ProjectionX("hxZNA");
- TH1D *hyZNA = hcentrZNA->ProjectionY("hyZNA");
- //
- TH1D *hsum = hdebu->ProjectionY("hsum");
- TH1D *hdiff = hdebu->ProjectionX("hdiff");
-  
-  TString s4 = "ZPCpeak1p_";
-  s4.Append(Form("%d.gif", nRun));
-  c4->Print(s4.Data());
 
 TCanvas *c5 = new TCanvas("c5","ZN towers", 600, 0, 1400, 600);
 c5->Divide(2,1);
@@ -260,6 +144,124 @@ c5->Divide(2,1);
   TString s5 = "ZNtowers_";
   s5.Append(Form("%d.gif", nRun));
   c5->Print(s5.Data());
+
+ TCanvas *c1 = new TCanvas("c1","Fit 1n peak ZNA", 0, 0, 600,600);
+  c1->cd();
+  gPad->SetLogy(1);
+
+  hdebu->Draw("colz");
+  hdebu->GetXaxis()->SetTitle("t_{ZNC}-t_{ZNA} (ns)");
+  hdebu->GetXaxis()->SetRangeUser(-15., 15.);
+  hdebu->GetYaxis()->SetTitle("t_{ZNC}+t_{ZNA} (ns)");
+
+  TLatex *t = new TLatex();
+    t->SetNDC();
+    t->SetTextAlign(22);
+    t->SetTextFont(42);
+    t->SetTextSize(0.05);
+
+   t->DrawLatex(0.1,0.9,"ALICE Performance");
+   t->DrawLatex(0.1,0.75,"Pb-Pb #sqrt{#it{s_{NN}}} = 5.36 TeV");
+
+  hZNA1n->SetLineColor(kBlue+3);
+  hZNA1n->Draw("");
+  hZNA1n->GetXaxis()->SetTitle("ZNA signal (a.u.)");
+  hZNA1n->GetYaxis()->SetTitle("Counts");
+  // ******************************************
+  float npara = hZNA1n->GetMaximum();
+  float xmaxa = hZNA1n->GetBinCenter(hZNA1n->GetMaximumBin());
+  double xlowa = 0.2*xmaxa, xupa = 3.5*xmaxa;  
+  printf(" - fitting ZNA spectrum in x range: %1.0f-%1.0f\n",xlowa, xupa);
+  hZNA1n->GetXaxis()->SetRangeUser(1.,300.);
+  	TF1 *funcA = new TF1("fitfun", fitfun, xlowa, xupa, 5);
+		funcA->SetParameters(0.95*npara, xmaxa, 0.18*xmaxa, npara*0.16, npara*0.04);
+  	funcA->SetParNames("N1A","mu1A","s1A","N2A","N3A");
+	  //
+    funcA->SetLineColor(kPink-2);
+    funcA->SetLineWidth(1);
+	  hZNA1n->Fit("fitfun","RQ");
+    //
+    Double_t mu1A = funcA->GetParameter(1);
+  
+  TString s1 = "ZNApeak1n_";
+  s1.Append(Form("%d.gif", nRun));
+  c1->Print(s1.Data());
+
+ TCanvas *c2 = new TCanvas("c2","Fit 1n peak ZNC", 600, 0, 600, 600);
+  c2->cd();
+  gPad->SetLogy(1);
+  
+  hZNC1n->SetLineColor(kAzure+7);
+  hZNC1n->Draw("");
+  hZNC1n->GetXaxis()->SetTitle("ZNA signal (a.u.)");
+  hZNC1n->GetYaxis()->SetTitle("Counts");
+  // ******************************************
+  float npar2 = hZNC1n->GetMaximum();
+  float xmaxc = hZNC1n->GetBinCenter(hZNC1n->GetMaximumBin());
+  double xlowc = 0.2*xmaxc, xupc = 3.5*xmaxc;  
+  printf(" - fitting ZNC spectrum in x range: %1.0f-%1.0f  \n", xlowc, xupc);
+  hZNC1n->GetXaxis()->SetRangeUser(1.,300.);
+  	TF1 *funcC = new TF1("fitfun", fitfun, xlowc, xupc, 5);
+    funcC->SetParameters(0.95*npar2, xmaxc, 0.18*xmaxc, npar2*0.16, npar2*0.04);
+  	funcC->SetParNames("N1C","mu1C","s1C","N2C","N3C");
+	  //
+    funcC->SetLineColor(kPink);
+    funcC->SetLineWidth(1);
+	  hZNC1n->Fit("fitfun","RQ");
+    //
+    Double_t mu1C = funcC->GetParameter(1);
+  
+  TString s2 = "ZNCpeak1n_";
+  s2.Append(Form("%d.gif", nRun));
+  c2->Print(s2.Data());
+
+TCanvas *c3 = new TCanvas("c3","Fit 1p peak ZPA", 0, 600, 500, 500);
+ c3->cd();
+  gPad->SetLogy(1);
+  hZPA1p->SetLineColor(kAzure-4);
+  hZPA1p->Draw("");
+  hZPA1p->GetXaxis()->SetRangeUser(0., 250);
+  hZPA1p->GetXaxis()->SetTitle("ZPA signal (a.u.)");
+  hZPA1p->GetYaxis()->SetTitle("Counts");
+  //
+  double xlowp = 0, xupp = 0.;
+  if(isZDCcalibrated) xlowp = 2., xupp = 4.5;
+  else xlowp = 50., xupp = 100.;
+  printf(" - fitting ZP spectra in x range: %1.0f-%1.0f  \n", xlowp, xupp);
+  //
+  hZPA1p->Fit("gaus","Q","", xlowp, xupp);
+  TF1 *f1pa = (TF1*)hZPA1p->GetListOfFunctions()->FindObject("gaus");
+  double mu1pA = f1pa->GetParameter(1);
+  
+  TString s3 = "ZPApeak1p_";
+  s3.Append(Form("%d.gif", nRun));
+  c3->Print(s3.Data());
+
+
+TCanvas *c4 = new TCanvas("c4","Fit 1p peak ZPC", 600, 600, 500, 500);
+ c4->cd();
+  gPad->SetLogy(1);
+  hZPC1p->SetLineColor(kViolet-4);
+  hZPC1p->Draw("");
+  hZPC1p->GetXaxis()->SetRangeUser(0., 250);
+  hZPC1p->GetXaxis()->SetTitle("ZPA signal (a.u.)");
+  hZPC1p->GetYaxis()->SetTitle("Counts");
+  //
+  hZPC1p->Fit("gaus","Q","", xlowp, xupp);
+  TF1 *f1pc = (TF1*)hZPC1p->GetListOfFunctions()->FindObject("gaus");
+  double mu1pC = f1pc->GetParameter(1);
+
+ TH1D *hxZNC = hcentrZNC->ProjectionX("hxZNC");
+ TH1D *hyZNC = hcentrZNC->ProjectionY("hyZNC");
+ TH1D *hxZNA = hcentrZNA->ProjectionX("hxZNA");
+ TH1D *hyZNA = hcentrZNA->ProjectionY("hyZNA");
+ //
+ TH1D *hsum = hdebu->ProjectionY("hsum");
+ TH1D *hdiff = hdebu->ProjectionX("hdiff");
+  
+  TString s4 = "ZPCpeak1p_";
+  s4.Append(Form("%d.gif", nRun));
+  c4->Print(s4.Data());
 
 if(printScreen){
  printf("\n **************************************************************************\n");

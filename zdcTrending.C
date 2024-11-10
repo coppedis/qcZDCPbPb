@@ -36,7 +36,7 @@ void zdcTrending()
   //         such number is equal to the entries in file outputQC.txt  
   //      (provided that there are no double entries -> CHECK THE RUN NO.!)
   // *********************************************************************************
-  const int nRun = 129;
+  const int nRun = 4;
   // **************************************************************************
 
   // --------------------
@@ -174,9 +174,9 @@ void zdcTrending()
   meanzna->GetXaxis()->SetTitleOffset(1.2);
   meanzna->GetYaxis()->SetTitle("Average amplitude");
   meanzna->GetXaxis()->SetRangeUser(run[0], run[nRun-1]);  
-  meanzna->GetYaxis()->SetRangeUser(yedgesZN[0]-50., yedgesZN[1]+50.);  
-  meanznc->SetMarkerColor(kPink-2);  
-  meanznc->SetLineColor(kPink-2);
+  meanzna->GetYaxis()->SetRangeUser(0., 40.);  
+  meanznc->SetMarkerColor(kBlue+2);  
+  meanznc->SetLineColor(kBlue+2);
   meanznc->SetMarkerStyle(20);
   meanznc->Draw("PLSAME"); 
   //
@@ -209,7 +209,7 @@ void zdcTrending()
   meanzpa->GetXaxis()->SetTitleOffset(1.2);
   meanzpa->GetYaxis()->SetTitle("Average amplitude");
   meanzpa->GetXaxis()->SetRangeUser(run[0], run[nRun-1]);  
-  meanzpa->GetYaxis()->SetRangeUser(yedgesZP[0]-50., yedgesZP[1]+50.);  
+  meanzpa->GetYaxis()->SetRangeUser(0., 20.);  
   meanzpc->SetMarkerColor(kPink-2);  
   meanzpc->SetLineColor(kPink-2);
   meanzpc->SetMarkerStyle(21);
@@ -359,8 +359,8 @@ void zdcTrending()
   meanYzna->SetMarkerColor(kAzure+3); 
   meanYzna->SetLineColor(kAzure+3);
   meanYzna->SetMarkerStyle(20); 
-  meanYznc->SetMarkerColor(kPink+6); 
-  meanYznc->SetLineColor(kPink+6);
+  meanYznc->SetMarkerColor(kPink-3); 
+  meanYznc->SetLineColor(kPink-3);
   meanYznc->SetMarkerStyle(20); 
   meanYzna->Draw("APL"); 
   meanYzna->GetXaxis()->SetNoExponent();
@@ -401,7 +401,7 @@ void zdcTrending()
   peakzna->GetXaxis()->SetTitleOffset(1.2);
   peakzna->GetYaxis()->SetTitle("1n peak value");  
   peakzna->GetXaxis()->SetTitle("RUN number");
-  peakzna->GetYaxis()->SetRangeUser(yedges1npeak[0]-20., yedges1npeak[1]+20.);
+  peakzna->GetYaxis()->SetRangeUser(0., 5.);
   peakzna->GetXaxis()->SetRangeUser(run[0], run[nRun-1]);  
   peakznc->SetMarkerColor(kAzure+8); 
   peakznc->SetLineColor(kAzure+8); 
@@ -447,11 +447,11 @@ void zdcTrending()
   peakzpa->GetXaxis()->SetTitleOffset(1.2);
   peakzpa->GetYaxis()->SetTitle("1p peak value");
   peakzpa->GetXaxis()->SetTitle("RUN number");
-  peakzpa->GetYaxis()->SetRangeUser(yedges1ppeak[0]-20., yedges1ppeak[1]+20.);
+  peakzpa->GetYaxis()->SetRangeUser(0., 5.);
   peakzpa->GetXaxis()->SetRangeUser(run[0], run[nRun-1]);  
   //
-  peakzpc->SetMarkerColor(kPink+9); 
-  peakzpc->SetLineColor(kPink+9); 
+  peakzpc->SetMarkerColor(kPink-3); 
+  peakzpc->SetLineColor(kPink-3); 
   peakzpc->SetMarkerStyle(21);
   peakzpc->Draw("PLSAME"); 
   //
