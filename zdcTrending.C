@@ -36,7 +36,7 @@ void zdcTrending()
   //         such number is equal to the entries in file outputQC.txt  
   //      (provided that there are no double entries -> CHECK THE RUN NO.!)
   // *********************************************************************************
-  const int nRun = 4;
+  const int nRun = 19;
   // **************************************************************************
 
   // --------------------
@@ -251,7 +251,7 @@ void zdcTrending()
   meansum->GetXaxis()->SetTitleOffset(1.2);
   meansum->GetYaxis()->SetTitle("ZN TDCs");
   meansum->GetXaxis()->SetRangeUser(run[0], run[nRun-1]);  
-  meansum->GetYaxis()->SetRangeUser(-4., 4.);  
+  meansum->GetYaxis()->SetRangeUser(-10., 4.);  
   meandiff->SetMarkerColor(kBlue+4);  
   meandiff->SetLineColor(kBlue+4);
   meandiff->SetMarkerStyle(20);
@@ -401,7 +401,7 @@ void zdcTrending()
   peakzna->GetXaxis()->SetTitleOffset(1.2);
   peakzna->GetYaxis()->SetTitle("1n peak value");  
   peakzna->GetXaxis()->SetTitle("RUN number");
-  peakzna->GetYaxis()->SetRangeUser(0., 5.);
+  peakzna->GetYaxis()->SetRangeUser(1.8, 3.6);
   peakzna->GetXaxis()->SetRangeUser(run[0], run[nRun-1]);  
   peakznc->SetMarkerColor(kAzure+8); 
   peakznc->SetLineColor(kAzure+8); 
@@ -447,7 +447,7 @@ void zdcTrending()
   peakzpa->GetXaxis()->SetTitleOffset(1.2);
   peakzpa->GetYaxis()->SetTitle("1p peak value");
   peakzpa->GetXaxis()->SetTitle("RUN number");
-  peakzpa->GetYaxis()->SetRangeUser(0., 5.);
+  peakzpa->GetYaxis()->SetRangeUser(2.2, 3.8);
   peakzpa->GetXaxis()->SetRangeUser(run[0], run[nRun-1]);  
   //
   peakzpc->SetMarkerColor(kPink-3); 
