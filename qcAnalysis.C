@@ -225,7 +225,7 @@ TCanvas *c3 = new TCanvas("c3","Fit 1p peak ZPA", 0, 600, 500, 500);
   hZPA1p->GetYaxis()->SetTitle("Counts");
   //
   double xlowp = 0, xupp = 0.;
-  if(isZDCcalibrated) xlowp = 2., xupp = 4.5;
+  if(isZDCcalibrated) xlowp = 2.5, xupp = 4.5;
   else xlowp = 50., xupp = 100.;
   printf(" - fitting ZP spectra in x range: %1.0f-%1.0f  \n", xlowp, xupp);
   //

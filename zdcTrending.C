@@ -36,7 +36,7 @@ void zdcTrending()
   //         such number is equal to the entries in file outputQC.txt  
   //      (provided that there are no double entries -> CHECK THE RUN NO.!)
   // *********************************************************************************
-  const int nRun = 19;
+  const int nRun = 26;
   // **************************************************************************
 
   // --------------------
@@ -447,7 +447,7 @@ void zdcTrending()
   peakzpa->GetXaxis()->SetTitleOffset(1.2);
   peakzpa->GetYaxis()->SetTitle("1p peak value");
   peakzpa->GetXaxis()->SetTitle("RUN number");
-  peakzpa->GetYaxis()->SetRangeUser(2.2, 3.8);
+  peakzpa->GetYaxis()->SetRangeUser(2.2, 4.2);
   peakzpa->GetXaxis()->SetRangeUser(run[0], run[nRun-1]);  
   //
   peakzpc->SetMarkerColor(kPink-3); 
